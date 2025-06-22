@@ -3,9 +3,9 @@ import soundfile
 from pedalboard import load_plugin, Pedalboard
 import numpy as np
 import matplotlib.pyplot as plt
-from Saturations.Saturations import add_tanh_harmonics
+from Saturations.Saturations import add_tanh_harmonics, add_cubic_harmonics, add_fullrect_harmonics, add_asym_clip
 
-audio, sample_rate = soundfile.read('10 Topin.wav')
+#audio, sample_rate = soundfile.read('10 Topin.wav')
 
 duration = 2.0  # seconds
 sample_rate = 44100
@@ -13,7 +13,7 @@ frequency = 440  # Hz (A4)
 t = np.linspace(0, duration, int(sample_rate * duration), endpoint=False)
 mono = 0.5 * np.sin(2 * np.pi * frequency * t).astype(np.float32)
 audio = np.stack([mono, mono], axis=-1) 
-effect = load_plugin("./CHANNEV.vst3")
+effect = load_plugin("./host/CHANNEV.vst3")
 #effect = load_plugin("./Inf EQ.vst3")
 #print(effect.parameters.keys())
 neutral_params = {
@@ -80,6 +80,9 @@ effected = board(audio, sample_rate)
 
 mono_harm = add_tanh_harmonics(mono, amount=1.0)
 mono_harm = add_cubic_harmonics(mono_harm, amount=1.0)
+# mono_harm = add_fullrect_harmonics(mono_harm, amount=0.1)
+mono_harm = add_asym_clip(mono_harm, amount=0.07)
+
 harmoAdded = np.stack([mono_harm, mono_harm], axis=-1)
 
 if audio.ndim > 1:

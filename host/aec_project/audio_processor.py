@@ -27,9 +27,10 @@ class VSTProcessor:
 
 class HarmonicProcessor:
     """A processor for adding custom harmonic distortion."""
-    def __init__(self, tanh_amount=1.0, cubic_amount=1.0, fullrect_amount=0.0, asym_clip_amount=0.07):
+    def __init__(self, tanh_amount=1.0,tanh_bias=0.0, cubic_amount=1.0, fullrect_amount=0.0, asym_clip_amount=0.07):
         self.params = {
             'tanh': tanh_amount,
+            'tanh_bias': tanh_bias,
             'cubic': cubic_amount,
             'fullrect': fullrect_amount,
             'asym': asym_clip_amount
@@ -44,10 +45,10 @@ class HarmonicProcessor:
         # Process each channel independently
         for i in range(audio.shape[1]):
             channel = audio[:, i]
-            channel = add_tanh_harmonics(channel, amount=self.params['tanh'])
+            channel = add_asym_clip(channel, amount=self.params['asym'])
+            channel = add_tanh_harmonics(channel, amount=self.params['tanh'], bias=self.params['tanh_bias'])
             channel = add_cubic_harmonics(channel, amount=self.params['cubic'])
             channel = add_fullrect_harmonics(channel, amount=self.params['fullrect'])
-            channel = add_asym_clip(channel, amount=self.params['asym'])
             processed_channels.append(channel)
         
         return np.stack(processed_channels, axis=-1)

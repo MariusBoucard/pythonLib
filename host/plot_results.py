@@ -16,9 +16,9 @@ def plot_fft_comparison(data: dict):
     # Convert magnitudes to dB, adding a small epsilon to avoid log(0)
     epsilon = 1e-9
     
-    plt.semilogx(data['freq_axis'], 20 * np.log10(data['original_fft'] + epsilon), label='Original')
-    plt.semilogx(data['freq_axis'], 20 * np.log10(data['effected_vst_fft'] + epsilon), label='VST Processed')
     plt.semilogx(data['freq_axis'], 20 * np.log10(data['effected_harm_fft'] + epsilon), label='Harmonics Added', linestyle='--')
+    plt.semilogx(data['freq_axis'], 20 * np.log10(data['effected_vst_fft'] + epsilon), label='VST Processed')
+    plt.semilogx(data['freq_axis'], 20 * np.log10(data['original_fft'] + epsilon), label='Original')
     
     plt.title('FFT Comparison of Audio Signals')
     plt.xlabel('Frequency (Hz)')

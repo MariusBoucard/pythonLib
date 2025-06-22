@@ -25,7 +25,7 @@ def main():
     effected_audio = vst_processor.process(original_audio, SAMPLE_RATE)
     
     # 3. Process Audio with Custom Harmonics
-    harmonic_processor = HarmonicProcessor()
+    harmonic_processor = HarmonicProcessor(tanh_amount=1.0, tanh_bias=-0.5,cubic_amount=0.0, fullrect_amount=0.0, asym_clip_amount=0.02)
     harmonic_audio = harmonic_processor.process(original_audio, SAMPLE_RATE)
 
     # 4. Analyze Signals
@@ -39,9 +39,9 @@ def main():
     handler.save_analysis_data(
         OUTPUT_FILE,
         freq_axis=freq_axis,
-        original_fft=orig_fft,
+        effected_harm_fft=harm_fft,
         effected_vst_fft=effected_fft,
-        effected_harm_fft=harm_fft
+        original_fft=orig_fft,
     )
 
 if __name__ == "__main__":
